@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import DisplayWeather from "./DisplayWeather/DisplayWeather";
 import SearchWeather from "./SearchWeather/SearchWeather";
-import { WEATHER_API_URL, WEATHER_API_KEY } from "./constants";
+import { WEATHER_API_URL, WEATHER_API_KEY } from "./configs/constants";
 
 function App() {
   const [cityName, setCityName] = useState("");

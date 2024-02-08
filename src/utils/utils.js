@@ -1,12 +1,12 @@
-import clearAnimation from "./assets/clear.json";
-import cloudsAnimation from "./assets/clouds.json";
-import drizzleAnimation from "./assets/drizzle.json";
-import humidityAnimation from "./assets/humidity.json";
-import mistAnimation from "./assets/mist.json";
-import rainAnimation from "./assets/rain.json";
-import snowAnimation from "./assets/snow.json";
-import windAnimation from "./assets/wind.json";
-import defaultAnimation from "./assets/loading.json";
+import clearAnimation from "../assets/clear.json";
+import cloudsAnimation from "../assets/clouds.json";
+import drizzleAnimation from "../assets/drizzle.json";
+import humidityAnimation from "../assets/humidity.json";
+import mistAnimation from "../assets/mist.json";
+import rainAnimation from "../assets/rain.json";
+import snowAnimation from "../assets/snow.json";
+import windAnimation from "../assets/wind.json";
+import defaultAnimation from "../assets/loading.json";
 
 export const getAnimationByName = (weatherName) => {
   const nameToAnimationMap = {

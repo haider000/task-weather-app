@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import useDebounce from "./useDebounce";
 import { FaSearch } from "react-icons/fa";
 import AutoSuggestInput from "../AutoSuggestionInput/AutoSuggestionInput";
-import { GEO_API_URL, geoApiOptions } from "../constants";
+import { GEO_API_URL, geoApiOptions } from "../configs/constants";
 
 const SearchWeather = ({ handleOnOptionClick, setErrorMessage, cityName, setCityName }) => {
   const [results, setResults] = useState([]);
@@ -67,7 +67,7 @@ const SearchWeather = ({ handleOnOptionClick, setErrorMessage, cityName, setCity
       {/*<div>
         <button
           type="button"
-          className="px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          className="px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           onClick={() => handleOnOptionClick({}, true)}
         >
           Search

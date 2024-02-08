@@ -1,7 +1,7 @@
 import React from "react";
 import Lottie from "react-lottie";
 
-import { getAnimationByName, capitalizeFirstLetter } from "../utils";
+import { getAnimationByName, capitalizeFirstLetter } from "../utils/utils";
 
 import { IoLocationOutline } from "react-icons/io5";
 
