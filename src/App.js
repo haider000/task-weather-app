@@ -10,7 +10,7 @@ import getWeather from "./services/getWeather";
 function App() {
   const [cityName, setCityName] = useState("");
   const [currentWeather, setCurrentWeather] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [weatherApiErrorMessage, setWeatherApiErrorMessage] = useState("");
   const [geoApiErrorMessage, setGeoApiErrorMessage] = useState("");
 
