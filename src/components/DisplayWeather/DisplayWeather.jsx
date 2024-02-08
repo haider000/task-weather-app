@@ -1,20 +1,19 @@
 import React from "react";
 import Lottie from "react-lottie";
 
-import { getAnimationByName, capitalizeFirstLetter } from "../utils/utils";
-
 import { IoLocationOutline } from "react-icons/io5";
 
-import windIcon from "../assets/wind.png";
-import humidityIcon from "../assets/humidity.png";
-import pressureIcon from "../assets/pressure.png";
+import windIcon from "../../assets/wind.png";
+import humidityIcon from "../../assets/humidity.png";
+import pressureIcon from "../../assets/pressure.png";
+import { getAnimationByName, capitalizeFirstLetter } from "../../utils/utils";
 
 const DisplayWeather = ({ currentWeather, setCurrentWeather }) => {
   //const date = new Date((currentWeather?.dt || 0) * 1000);
 
   return (
     <div className="flex flex-col items-center justify-between bg-gradient-to-br from-[#00feba] to-[#5b548a] text-white md:min-w-[500px] md:mt-8 pt-8 px-4 rounded-lg">
-      <div className="flex flex-col gap-2 items-cemter justify-center">
+      <div className="flex flex-col gap-2 items-center justify-center">
         <div className="w-[200px] h-[200px] mx-auto">
           <Lottie
             {...getAnimationByName(
@@ -28,26 +27,25 @@ const DisplayWeather = ({ currentWeather, setCurrentWeather }) => {
         </div>
 
         <div className="flex flex-col justify-center items-center">
-          <div className="flex items-end gap-2">
-            <h1 className="flex text-8xl font-bold">
-              <span>
-                {currentWeather?.main?.temp
-                  ? Math.floor(currentWeather.main.temp)
-                  : ""}
-              </span>
-              <span className="text-4xl">&deg;C</span>
-            </h1>
-            <div className="flex text-2xl text-[#19202d]">
-              {currentWeather?.weather &&
-              currentWeather?.weather.length > 0 &&
-              currentWeather?.weather[0]?.description
-                ? capitalizeFirstLetter(currentWeather.weather[0].description)
-                : ""}
-            </div>
+          <div className="flex text-2xl font-medium">
+            {currentWeather?.weather &&
+            currentWeather?.weather.length > 0 &&
+            currentWeather?.weather[0]?.description
+              ? capitalizeFirstLetter(currentWeather.weather[0].description)
+              : ""}
           </div>
 
-          <p className="text-3xl flex font-semibold py-4">
-            <IoLocationOutline /> {currentWeather.city}
+          <h1 className="flex text-8xl font-bold">
+            <span>
+              {currentWeather?.main?.temp
+                ? Math.floor(currentWeather.main.temp)
+                : ""}
+            </span>
+            <span className="text-4xl">&deg;C</span>
+          </h1>
+
+          <p className="text-3xl flex font-semibold text-[#19202d] py-4">
+            <IoLocationOutline /> {currentWeather.name}
           </p>
         </div>
       </div>

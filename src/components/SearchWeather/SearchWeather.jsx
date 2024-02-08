@@ -1,10 +1,17 @@
 import React, { useState, useEffect, useCallback } from "react";
-import useDebounce from "./useDebounce";
 import { FaSearch } from "react-icons/fa";
-import AutoSuggestInput from "../AutoSuggestionInput/AutoSuggestionInput";
-import { GEO_API_URL, geoApiOptions } from "../configs/constants";
 
-const SearchWeather = ({ handleOnOptionClick, setErrorMessage, cityName, setCityName }) => {
+import AutoSuggestInput from "../AutoSuggestionInput/AutoSuggestionInput";
+
+import getCities from "../../services/getCities";
+import useDebounce from "../../hooks/useDebounce";
+
+const SearchWeather = ({
+  handleOnOptionClick,
+  setGeoApiErrorMessage,
+  cityName,
+  setCityName,
+}) => {
   const [results, setResults] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -13,26 +20,20 @@ const SearchWeather = ({ handleOnOptionClick, setErrorMessage, cityName, setCity
   const getCityNameSuggestions = useCallback(
     async (inputValue) => {
       try {
-        const response = await fetch(
-          `${GEO_API_URL}/cities?minPopulation=100000&namePrefix=${inputValue}`,
-          geoApiOptions
-        );
-        const data = await response.json();
+        setGeoApiErrorMessage("");
+        const data = await getCities(inputValue);
 
-        if (data) {
-          setResults(
-            data.data.map((city) => ({
-              value: `${city.latitude} ${city.longitude}`,
-              label: `${city.name}, ${city.countryCode}`,
-            }))
-          );
-        }
+        setResults(data);
       } catch (error) {
-        setErrorMessage("No city found with given initials!");
-        console.log("Error in Fetching city Name", error, error.message);
+        setGeoApiErrorMessage(
+          error.response.data.message
+            ? `While Fetching City Name Suggestions, ${error.response.data.message}`
+            : `Error in Fetching City Name Suggestions!`
+        );
+        console.log("Error in Fetching city Name", error.response.data.message);
       }
     },
-    [setErrorMessage]
+    [setGeoApiErrorMessage]
   );
 
   const handleChange = (value) => {
@@ -45,7 +46,7 @@ const SearchWeather = ({ handleOnOptionClick, setErrorMessage, cityName, setCity
   }, [debouncedValue, getCityNameSuggestions]);
 
   return (
-    <div className="flex gap-4 w-[70%] pt-8">
+    <div className="flex flex-col lg:flex-row gap-4 w-full md:w-[70%] pt-8 mb-14">
       <AutoSuggestInput
         setValue={setCityName}
         suggestions={results}
@@ -64,15 +65,21 @@ const SearchWeather = ({ handleOnOptionClick, setErrorMessage, cityName, setCity
         </div>
       </AutoSuggestInput>
 
-      {/*<div>
+      <div>
         <button
           type="button"
-          className="px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-          onClick={() => handleOnOptionClick({}, true)}
+          className="px-4 py-2.5 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300"
+          onClick={() => {
+            if (cityName.trim() === "") return;
+            handleOnOptionClick(
+              { value: "", label: "", latitude: "", longitude: "" },
+              true
+            );
+          }}
         >
           Search
         </button>
-      </div>*/}
+      </div>
     </div>
   );
 };

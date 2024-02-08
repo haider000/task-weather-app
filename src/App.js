@@ -1,33 +1,41 @@
-import React, { useState, useEffect } from "react";
-import DisplayWeather from "./DisplayWeather/DisplayWeather";
-import SearchWeather from "./SearchWeather/SearchWeather";
-import { WEATHER_API_URL, WEATHER_API_KEY } from "./configs/constants";
+import React, { useState, useEffect, useCallback } from "react";
+
+import DisplayWeather from "./components/DisplayWeather/DisplayWeather";
+import SearchWeather from "./components/SearchWeather/SearchWeather";
+import Loader from "./components/Loader/Loader";
+
+import getWeather from "./services/getWeather";
 
 function App() {
   const [cityName, setCityName] = useState("");
   const [currentWeather, setCurrentWeather] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [weatherApiErrorMessage, setWeatherApiErrorMessage] = useState("");
+  const [geoApiErrorMessage, setGeoApiErrorMessage] = useState("");
 
-  const handleOnOptionClick = async (searchData, searchByCityName=false) => {
-    try {
-      setIsLoading(true);
-      setErrorMessage("");
-      const [lat, lon] = searchData.value.split(" ");
-      const response = await fetch(
-        `${WEATHER_API_URL}/weather?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}&units=metric`
-      );
+  const handleOnOptionClick = useCallback(
+    async (searchData, searchByCityName = false) => {
+      try {
+        setIsLoading(true);
+        setWeatherApiErrorMessage("");
 
-      localStorage.setItem("lastCity", JSON.stringify(searchData));
-      const currentCityWeather = await response.json();
-      setIsLoading(false);
-      setCurrentWeather({ city: searchData.label, ...currentCityWeather });
-    } catch (error) {
-      setIsLoading(false);
-      console.log(error);
-      setErrorMessage("Weather Api breaks!");
-    }
-  };
+        const currentCityWeather = await getWeather(
+          searchData,
+          cityName,
+          searchByCityName
+        );
+
+        localStorage.setItem("lastCity", JSON.stringify(searchData));
+        setIsLoading(false);
+        setCurrentWeather({ city: searchData.label, ...currentCityWeather });
+      } catch (error) {
+        setIsLoading(false);
+        console.log("Weather Api breaks!", error.response.data.message);
+        setWeatherApiErrorMessage(`Error: ${error.response.data.message}`);
+      }
+    },
+    [cityName]
+  );
 
   useEffect(() => {
     const savedCity = localStorage.getItem("lastCity");
@@ -37,35 +45,63 @@ function App() {
   }, []);
 
   return (
-    <div className="flex flex-col md:flex-row justify-around h-[100vh] w-[100vw] p-8 md:m-0 bg-[#19202d]">
-      <div className="flex flex-col w-full">
-        <SearchWeather
-          currentWeather={currentWeather}
-          setCurrentWeather={setCurrentWeather}
-          handleOnOptionClick={handleOnOptionClick}
-          setErrorMessage={setErrorMessage}
-          cityName={cityName}
-          setCityName={setCityName}
-        />
+    <>
+      {isLoading && <Loader />}
+      <div className="flex flex-col lg:flex-row justify-around h-full sm:h-[100vh] w-[100vw] py-8 px-3 md:px-20 md:m-0 bg-[#19202d]">
+        <div className="flex flex-col w-full justify-between">
+          <SearchWeather
+            currentWeather={currentWeather}
+            setCurrentWeather={setCurrentWeather}
+            handleOnOptionClick={handleOnOptionClick}
+            setGeoApiErrorMessage={setGeoApiErrorMessage}
+            cityName={cityName}
+            setCityName={setCityName}
+          />
 
-        {errorMessage && (
-          <p className="text-red-300 text-xl my-8">{errorMessage}</p>
-        )}
-      </div>
+          {(geoApiErrorMessage || weatherApiErrorMessage) && (
+            <div className="my-6 max-w-[70%] bg-gray-800 items-center rounded-md p-3">
+              {weatherApiErrorMessage && (
+                <p className="">
+                  <span className="text-red-500 text-2xl font-bold">
+                    Error:
+                  </span>
+                  <span className="text-base pl-4 text-white">
+                    {weatherApiErrorMessage}
+                  </span>
+                </p>
+              )}
 
-      {isLoading  ? (
-        <div className="w-full h-full fixed top-0 left-0 bg-white opacity-75 z-50">
-          <div className="flex justify-center items-center mt-[50vh]">
-            <div className="fas fa-circle-notch fa-spin fa-5x text-violet-600"></div>
-          </div>
+              {geoApiErrorMessage && (
+                <div className="flex flex-col gap-2">
+                  <p className="">
+                    <span className="text-red-500 text-2xl font-bold">
+                      Error:
+                    </span>
+                    <span className="text-base pl-4 text-white">
+                      {geoApiErrorMessage}
+                    </span>
+                  </p>
+                  <p className="pt-4">
+                    <span className="text-green-500 text-2xl font-bold">
+                      Suggestion:
+                    </span>
+                    <span className="text-base pl-4 text-white">
+                      Press the search button to retrieve weather details for
+                      the city you entered in the input box.
+                    </span>
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
-      ) : (
+
         <DisplayWeather
           currentWeather={currentWeather}
           setCurrentWeather={setCurrentWeather}
         />
-      )}
-    </div>
+      </div>
+    </>
   );
 }
 

@@ -33,7 +33,7 @@ const AutoSuggestInput = ({
   };
 
   return (
-    <div className="relative w-full mb-14" ref={inputRef}>
+    <div className="relative w-full" ref={inputRef}>
       {children}
       {showSuggestions && suggestions.length > 0 && (
         <ul
