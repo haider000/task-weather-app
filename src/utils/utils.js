@@ -1,3 +1,5 @@
+import {  clsx } from 'clsx'
+import { twMerge } from 'tailwind-merge'
 import clearAnimation from "../assets/clear.json";
 import cloudsAnimation from "../assets/clouds.json";
 import drizzleAnimation from "../assets/drizzle.json";
@@ -59,4 +61,10 @@ export function formatAMPM(date) {
   minutes = minutes < 10 ? '0'+minutes : minutes;
   let strTime = hours + ':' + minutes + ' ' + ampm;
   return strTime;
+}
+
+
+
+export function cn(...inputs) {
+  return twMerge(clsx(inputs))
 }
