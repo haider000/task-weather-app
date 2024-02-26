@@ -4,12 +4,14 @@ import React, { useState, useEffect, useCallback } from "react";
 import DisplayWeather from "./components/DisplayWeather/DisplayWeather";
 import SearchWeather from "./components/SearchWeather/SearchWeather";
 import Loader from "./components/Loader/Loader";
+import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
+import Highlights from "./components/Highlights/Highlights";
 
 import getWeather from "./services/getWeather";
 
 function App() {
   const [cityName, setCityName] = useState("");
-  const [currentWeather, setCurrentWeather] = useState([]);
+  const [currentWeather, setCurrentWeather] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [weatherApiErrorMessage, setWeatherApiErrorMessage] = useState("");
   const [geoApiErrorMessage, setGeoApiErrorMessage] = useState("");
@@ -26,12 +28,24 @@ function App() {
           searchByCityName
         );
 
-        localStorage.setItem("lastCity", JSON.stringify(searchData));
+        localStorage.setItem(
+          "lastCity",
+          JSON.stringify({
+            value: `${searchData.latitude} ${searchData.longitude}`,
+            label: `${searchData.label}`,
+            latitude: currentCityWeather.lat,
+            longitude: currentCityWeather.lon,
+          })
+        );
         setIsLoading(false);
-        setCurrentWeather({ city: searchData.label, ...currentCityWeather });
+        setCurrentWeather({
+          city: searchData.label || cityName,
+          ...currentCityWeather,
+        });
       } catch (error) {
         setIsLoading(false);
         console.log("Weather Api breaks!", error.response.data.message);
+        setCurrentWeather({});
         setWeatherApiErrorMessage(`Error: ${error.response.data.message}`);
       }
     },
@@ -48,8 +62,8 @@ function App() {
   return (
     <>
       {isLoading && <Loader />}
-      <div className="flex flex-col lg:flex-row justify-around h-full sm:h-[100vh] w-[100vw] py-8 px-3 md:px-20 md:m-0 bg-[#19202d]">
-        <div className="flex flex-col w-full justify-between">
+      <div className="flex lg:flex-row flex-col bg-[#242B39]">
+        <div className="flex flex-col justify-between items-center lg:w-[40%] lg:h-screen bg-[#19202d] px-8 py-8 lg:py-4">
           <SearchWeather
             currentWeather={currentWeather}
             setCurrentWeather={setCurrentWeather}
@@ -59,48 +73,24 @@ function App() {
             setCityName={setCityName}
           />
 
-          {(geoApiErrorMessage || weatherApiErrorMessage) && (
-            <div className="my-6 max-w-[70%] bg-gray-800 items-center rounded-md p-3">
-              {weatherApiErrorMessage && (
-                <p className="">
-                  <span className="text-red-500 text-2xl font-bold">
-                    Error:
-                  </span>
-                  <span className="text-base pl-4 text-white">
-                    {weatherApiErrorMessage}
-                  </span>
-                </p>
-              )}
+          <ErrorMessage
+            geoApiErrorMessage={geoApiErrorMessage}
+            weatherApiErrorMessage={weatherApiErrorMessage}
+          />
 
-              {geoApiErrorMessage && (
-                <div className="flex flex-col gap-2">
-                  <p className="">
-                    <span className="text-red-500 text-2xl font-bold">
-                      Error:
-                    </span>
-                    <span className="text-base pl-4 text-white">
-                      {geoApiErrorMessage}
-                    </span>
-                  </p>
-                  <p className="pt-4">
-                    <span className="text-green-500 text-2xl font-bold">
-                      Suggestion:
-                    </span>
-                    <span className="text-base pl-4 text-white">
-                      Press the search button to retrieve weather details for
-                      the city you entered in the input box.
-                    </span>
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
+          <DisplayWeather
+            currentWeather={currentWeather}
+            setCurrentWeather={setCurrentWeather}
+          />
         </div>
 
-        <DisplayWeather
-          currentWeather={currentWeather}
-          setCurrentWeather={setCurrentWeather}
-        />
+        <div className="flex flex-col lg:w-full overflow-auto lg:max-h-screen p-4 items-center">
+          <div className="flex  my-3 text-3xl font-bold text-white">
+            Highlights
+          </div>
+
+          <Highlights weather={currentWeather} />
+        </div>
       </div>
     </>
   );

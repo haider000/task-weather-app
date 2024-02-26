@@ -9,6 +9,7 @@ import rainAnimation from "../assets/rain.json";
 import snowAnimation from "../assets/snow.json";
 import windAnimation from "../assets/wind.json";
 import defaultAnimation from "../assets/loading.json";
+import hazeAmination from "../assets/Haze.json"
 
 export const getAnimationByName = (weatherName) => {
   const nameToAnimationMap = {
@@ -20,6 +21,7 @@ export const getAnimationByName = (weatherName) => {
     Snow: snowAnimation,
     Humidity: humidityAnimation,
     Wind: windAnimation,
+    Haze: hazeAmination
   };
 
   return {

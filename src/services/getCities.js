@@ -16,7 +16,7 @@ const getCities = async (inputValue) => {
     if (data && data.length > 0) {
       data = data.map((city) => ({
         value: `${city.latitude} ${city.longitude}`,
-        label: `${city.name}, ${city.countryCode}`,
+        label: `${city.name}`,
         latitude: city.latitude,
         longitude: city.longitude,
       }));

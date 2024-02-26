@@ -52,7 +52,7 @@ const AutoSuggestInput = ({
         </ul>
       )}
       {showSuggestions && suggestions.length === 0 && (
-        <div className="absolute z-100 left-0 w-[100%] border border-gray-300 bg-white shadow-lg rounded-lg mt-4  max-h-[300px] overflow-y-auto">
+        <div className="absolute py-[10px] px-2 z-100 left-0 w-[100%] border border-gray-300 bg-white shadow-lg rounded-lg mt-4 max-h-[300px] overflow-y-auto">
           No suggestions found.
         </div>
       )}
