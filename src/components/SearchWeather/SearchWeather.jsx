@@ -15,7 +15,7 @@ const SearchWeather = ({
   const [results, setResults] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  const debouncedValue = useDebounce(cityName, 600);
+  const debouncedValue = useDebounce(cityName, 400);
 
   const getCityNameSuggestions = useCallback(
     async (inputValue) => {
